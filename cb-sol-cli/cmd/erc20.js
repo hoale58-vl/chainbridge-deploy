@@ -7,13 +7,14 @@ const {setupParentArgs, waitForTx, log, expandDecimals} = require("./utils")
 const mintCmd = new Command("mint")
     .description("Mints erc20 tokens")
     .option('--amount <value>', 'Amount to mint', 100)
+    .option('--address <value>', 'Minted address')
     .option('--erc20Address <address>', 'ERC20 contract address', constants.ERC20_ADDRESS)
     .action(async function (args) {
         await setupParentArgs(args, args.parent.parent)
 
         const erc20Instance = new ethers.Contract(args.erc20Address, constants.ContractABIs.Erc20Mintable.abi, args.wallet);
-        log(args, `Minting ${args.amount} tokens to ${args.wallet.address} on contract ${args.erc20Address}`);
-        const tx = await erc20Instance.mint(args.wallet.address, expandDecimals(args.amount, args.decimals));
+        log(args, `Minting ${args.amount} tokens to ${args.address} on contract ${args.erc20Address}`);
+        const tx = await erc20Instance.mint(args.address, expandDecimals(args.amount, args.decimals));
         await waitForTx(args.provider, tx.hash)
     })
 
