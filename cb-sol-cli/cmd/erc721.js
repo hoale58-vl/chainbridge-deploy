@@ -9,12 +9,13 @@ const mintCmd = new Command("mint")
     .option('--erc721Address <address>', 'ERC721 contract address', constants.ERC721_ADDRESS)
     .option('--id <id>', "Token id", "0x1")
     .option('--metadata <bytes>', "Metadata (tokenURI) for token", "")
+    .option('--address <address>', "Recipient address token", "")
     .action(async function (args) {
         await setupParentArgs(args, args.parent.parent)
         const erc721Instance = new ethers.Contract(args.erc721Address, constants.ContractABIs.Erc721Mintable.abi, args.wallet);
 
-        log(args, `Minting token with id ${args.id} to ${args.wallet.address} on contract ${args.erc721Address}!`);
-        const tx = await erc721Instance.mint(args.wallet.address, ethers.utils.hexlify(args.id), args.metadata);
+        log(args, `Minting token with id ${args.id} to ${args.address} on contract ${args.erc721Address}!`);
+        const tx = await erc721Instance.mint(args.address, ethers.utils.hexlify(args.id), args.metadata);
         await waitForTx(args.provider, tx.hash)
     })
 
